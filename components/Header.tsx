@@ -1,9 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, User, Heart, ShoppingCart, Menu, X, ChevronDown, Truck, Phone, Mail, Facebook, Instagram, MessageCircle } from "lucide-react";
+import { Search, User, Heart, ShoppingCart, Menu, ChevronDown, Truck, Phone, Mail, Facebook, Instagram, MessageCircle } from "lucide-react";
 import Logo from "./Logo";
+import MobileMenu from "./MobileMenu";
+import SearchModal from "./SearchModal";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 
@@ -37,6 +39,9 @@ const offer = {
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const closeMenu = useCallback(() => setOpen(false), []);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
   const { count } = useCart();
   const { count: favCount, openDrawer } = useWishlist();
   const pathname = usePathname() || "/";
@@ -84,7 +89,7 @@ export default function Header() {
             ))}
           </nav>
           <div className="flex items-center gap-3 sm:gap-4 md:gap-7">
-            <button aria-label="Search" className="hover:text-brand"><Search className="h-5 w-5" /></button>
+            <button type="button" aria-label="Search" aria-haspopup="dialog" onClick={() => setSearchOpen(true)} className="hover:text-brand"><Search className="h-5 w-5" /></button>
             <button aria-label="Account" className="hidden hover:text-brand sm:block"><User className="h-5 w-5" /></button>
             <button type="button" onClick={openDrawer} aria-label={`Favorites (${favCount})`} aria-haspopup="dialog" className="relative hover:text-brand">
               <Heart className={`h-5 w-5 ${favCount > 0 ? "fill-brand text-brand" : ""}`} />
@@ -96,17 +101,15 @@ export default function Header() {
               <ShoppingCart className="h-5 w-5" />
               <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-brand text-[9px] font-bold text-white">{count}</span>
             </Link>
-            <button aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)} className="md:hidden">
-              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <button type="button" aria-label="Open menu" aria-haspopup="dialog" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(true)} className="md:hidden">
+              <Menu className="h-6 w-6" />
             </button>
           </div>
         </div>
-        {open && (
-          <nav aria-label="Mobile" className="container-wide flex flex-col gap-1 border-t border-gray-100 pb-4 pt-2 md:hidden">
-            {nav.map((n) => (<Link key={n.label} href={n.href} onClick={() => setOpen(false)} className={`py-2 text-sm hover:text-brand ${isActive(n.href) ? "text-brand" : ""}`}>{n.label}</Link>))}
-          </nav>
-        )}
       </header>
+      {/* Slide-in sidebar for phones (3-line button) */}
+      <MobileMenu open={open} onClose={closeMenu} items={nav} isActive={isActive} />
+      <SearchModal open={searchOpen} onClose={closeSearch} />
     </>
   );
 }
