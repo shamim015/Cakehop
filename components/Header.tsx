@@ -31,9 +31,8 @@ const nav: { label: string; href: string; dropdown: boolean; menu?: { label: str
   { label: "Contact", href: "/contact", dropdown: false },
 ];
 
-// Edit the offer text here. `short` is shown on phones, `full` from tablet size up.
+// Edit the offer text here. On phones it scrolls as a marquee, from tablet size up it is static.
 const offer = {
-  short: "Free delivery above Tk 3,000",
   full: "Free delivery on orders above Tk 3,000 · Use code CAKE10 for 10% OFF",
 };
 
@@ -52,9 +51,16 @@ export default function Header() {
       {/* Offer bar: scrolls away with the page */}
       <div className="bg-[#FDB5CE] text-[11px] text-white">
         <div className="container-wide flex h-9 items-center justify-center sm:justify-between">
-          <p className="flex min-w-0 items-center gap-1.5 font-medium">
+          <p className="flex min-w-0 flex-1 items-center gap-1.5 font-medium sm:flex-none">
             <Truck className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate sm:hidden">{offer.short}</span>
+            {/* Mobile: scrolling marquee (right to left, loops) */}
+            <span className="marquee min-w-0 flex-1 sm:hidden" aria-label={offer.full}>
+              <span className="marquee-track" aria-hidden="true">
+                <span className="marquee-item">{offer.full}</span>
+                <span className="marquee-item">{offer.full}</span>
+              </span>
+            </span>
+            {/* Tablet and up: static text */}
             <span className="hidden truncate sm:inline">{offer.full}</span>
           </p>
           <div className="hidden items-center gap-4 lg:flex">

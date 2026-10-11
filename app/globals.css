@@ -304,3 +304,15 @@ body {
     animation: none;
   }
 }
+
+/* Topbar offer marquee (mobile) */
+.marquee { overflow: hidden; white-space: nowrap; }
+.marquee-track { display: inline-flex; width: max-content; animation: marqueeScroll 14s linear infinite; }
+.marquee-item { padding-right: 3rem; }
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation-duration: 40s; }
+}
