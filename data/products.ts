@@ -1,4 +1,6 @@
 import type { Product } from "@/types";
+// "categories" decides which category page a cake shows up in (/shop?c=birthday).
+// Allowed ids: birthday, wedding, anniversary, photo, cupcakes. >>> Change these to match your real cakes <<<
 export const products: Product[] = [
   {
     id: "chocolate-delight",
@@ -7,6 +9,7 @@ export const products: Product[] = [
     rating: 4.5,
     reviews: 120,
     image: "/images/chocolate-delight.webp",
+    categories: ["birthday", "anniversary", "photo"],
   },
   {
     id: "red-velvet",
@@ -15,6 +18,7 @@ export const products: Product[] = [
     rating: 4.5,
     reviews: 98,
     image: "/images/red-velvet.webp",
+    categories: ["birthday", "wedding", "anniversary"],
   },
   {
     id: "black-forest",
@@ -23,6 +27,7 @@ export const products: Product[] = [
     rating: 4.5,
     reviews: 110,
     image: "/images/black-forest.webp",
+    categories: ["birthday", "anniversary"],
   },
   {
     id: "mango-cake",
@@ -31,5 +36,6 @@ export const products: Product[] = [
     rating: 4.5,
     reviews: 85,
     image: "/images/mango-cake.webp",
+    categories: ["birthday", "photo"],
   },
 ];
