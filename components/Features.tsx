@@ -10,11 +10,11 @@ export default function Features() {
     <section aria-label="Our promises" className="relative z-20 -mt-12">
       <div className="container-wide">
         <div className="rounded-xl bg-white p-2 shadow-[0_4px_20px_rgba(255,92,147,0.12)]">
-          <ul className="grid grid-cols-2 gap-y-6 rounded-lg bg-[#FFF7FA] px-2 py-5 md:grid-cols-4 md:px-6">
+          <ul className="grid grid-cols-2 gap-y-4 rounded-lg bg-[#FFF7FA] px-2 py-4 md:grid-cols-4 md:gap-y-6 md:px-6 md:py-5">
             {features.map(({ icon: Icon, title, text }, i) => (
-              <li key={title} className={`flex items-center gap-3 px-2 md:px-6 ${i > 0 ? "md:border-l md:border-gray-200" : ""}`}>
-                <Icon className="h-12 w-12 shrink-0 text-brand" strokeWidth={1.2} />
-                <div><p className="text-sm font-semibold">{title}</p><p className="text-xs text-gray-500">{text}</p></div>
+              <li key={title} className={`flex items-center gap-2 px-1 md:gap-3 md:px-6 ${i > 0 ? "md:border-l md:border-gray-200" : ""}`}>
+                <Icon className="h-8 w-8 shrink-0 text-brand md:h-12 md:w-12" strokeWidth={1.2} />
+                <div className="min-w-0 leading-tight"><p className="text-[13px] font-semibold md:text-sm">{title}</p><p className="mt-0.5 text-[11px] text-gray-500 md:text-xs">{text}</p></div>
               </li>
             ))}
           </ul>

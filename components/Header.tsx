@@ -49,7 +49,7 @@ export default function Header() {
   return (
     <>
       {/* Offer bar: scrolls away with the page */}
-      <div className="bg-[#FDB5CE] text-[11px] text-white">
+      <div className="bg-[#FDB5CE] text-[11px] text-black">
         <div className="container-wide flex h-9 items-center justify-center sm:justify-between">
           <p className="flex min-w-0 flex-1 items-center gap-1.5 font-medium sm:flex-none">
             <Truck className="h-3.5 w-3.5 shrink-0" />
