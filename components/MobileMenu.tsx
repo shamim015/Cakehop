@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Mail, Phone, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ChevronDown, Search, X } from "lucide-react";
 import Logo from "./Logo";
 
 export interface MobileNavItem {
@@ -22,7 +23,9 @@ export default function MobileMenu({
   items: MobileNavItem[];
   isActive: (href: string) => boolean;
 }) {
+  const router = useRouter();
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [term, setTerm] = useState("");
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -43,6 +46,15 @@ export default function MobileMenu({
       opener?.focus?.(); // give focus back to the 3-line button
     };
   }, [open, onClose]);
+
+  const search = (e: React.FormEvent) => {
+    e.preventDefault();
+    const t = term.trim();
+    if (!t) return;
+    router.push(`/shop?q=${encodeURIComponent(t)}`);
+    setTerm("");
+    onClose();
+  };
 
   return (
     <div className={`fixed inset-0 z-[80] transition-all duration-300 md:hidden ${open ? "visible" : "invisible"}`}>
@@ -70,6 +82,20 @@ export default function MobileMenu({
             <X className="h-6 w-6" />
           </button>
         </div>
+
+        <form role="search" onSubmit={search} className="flex gap-2 border-b border-gray-100 px-5 py-3">
+          <input
+            type="search"
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            placeholder="Search cakes…"
+            aria-label="Search cakes"
+            className="min-w-0 flex-1 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-[13px] outline-none transition placeholder:text-gray-400 focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20"
+          />
+          <button type="submit" aria-label="Search" className="flex h-9 w-10 shrink-0 items-center justify-center rounded-md bg-brand text-white transition hover:bg-brand-dark">
+            <Search className="h-4 w-4" />
+          </button>
+        </form>
 
         <nav aria-label="Mobile" className="flex-1 overflow-y-auto py-2">
           <ul>
@@ -116,14 +142,6 @@ export default function MobileMenu({
             })}
           </ul>
         </nav>
-
-        <div className="border-t border-gray-100 bg-gray-50 px-5 py-4">
-          <Link href="/custom-cake" className="btn-primary btn-shine w-full">Order a Custom Cake</Link>
-          <div className="mt-3 space-y-1.5 text-[12px] text-gray-600">
-            <a href="tel:+923001234567" className="flex items-center gap-2 hover:text-brand"><Phone className="h-3.5 w-3.5 text-brand" />+92 300 1234567</a>
-            <a href="mailto:info@cakeshop.com" className="flex items-center gap-2 hover:text-brand"><Mail className="h-3.5 w-3.5 text-brand" />info@cakeshop.com</a>
-          </div>
-        </div>
       </aside>
     </div>
   );
