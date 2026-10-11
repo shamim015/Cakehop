@@ -197,7 +197,7 @@ export default function CheckoutView() {
           Place Order on WhatsApp
         </button>
         <p className="mt-3 text-center text-[11px] leading-relaxed text-gray-500">
-          WhatsApp will open with your order ready to send. Your invoice appears right after.
+          WhatsApp will open with your order ready to send. Your invoice PDF downloads automatically right after.
         </p>
         <Link href="/cart" className="mt-3 block text-center text-xs font-semibold text-brand hover:underline">← Back to cart</Link>
       </aside>

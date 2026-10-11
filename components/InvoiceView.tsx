@@ -1,17 +1,51 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { MessageCircle, Printer } from "lucide-react";
+import { Download, MessageCircle, Printer } from "lucide-react";
 import Logo from "./Logo";
 import { SHOP } from "@/lib/shop";
 import { loadOrder, paymentName, tk, whatsappUrl, type Order } from "@/lib/order";
+import { downloadInvoicePdf } from "@/lib/invoicePdf";
+
+const DOWNLOADED_KEY = "cakeshop-invoice-downloaded"; // id of the order whose invoice was already auto-downloaded
 
 export default function InvoiceView() {
   const [order, setOrder] = useState<Order | null | undefined>(undefined); // undefined = still loading
 
+  const [busy, setBusy] = useState(false);
+  const autoStarted = useRef(false);
+
   useEffect(() => {
     setOrder(loadOrder());
   }, []);
+
+  // Right after an order is placed, download the invoice PDF automatically (only once per order).
+  useEffect(() => {
+    if (!order || autoStarted.current) return;
+    autoStarted.current = true;
+    try {
+      if (localStorage.getItem(DOWNLOADED_KEY) === order.id) return;
+    } catch {}
+    downloadInvoicePdf(order)
+      .then(() => {
+        try {
+          localStorage.setItem(DOWNLOADED_KEY, order.id);
+        } catch {}
+      })
+      .catch(() => {}); // if the browser blocks it, the Download button below still works
+  }, [order]);
+
+  const download = async () => {
+    if (!order || busy) return;
+    setBusy(true);
+    try {
+      await downloadInvoicePdf(order);
+    } catch {
+      window.print(); // fallback: browser print dialog -> Save as PDF
+    } finally {
+      setBusy(false);
+    }
+  };
 
   if (order === undefined) return <div className="h-40" />;
 
@@ -35,13 +69,16 @@ export default function InvoiceView() {
         <h1 className="section-title">Thank you, {order.customer.name.split(" ")[0]}!</h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-gray-600">
           Your order has been placed. Please send the pre-filled message in WhatsApp so we can confirm it.
-          Save or print your invoice below.
+          Your invoice PDF is downloading automatically. You can download it again below.
         </p>
       </div>
 
       <div className="mb-5 flex flex-wrap justify-center gap-3 print:hidden">
-        <button type="button" onClick={() => window.print()} className="btn-primary">
-          <Printer className="h-3.5 w-3.5" /> Download / Print Invoice
+        <button type="button" onClick={download} disabled={busy} className="btn-primary disabled:cursor-wait disabled:opacity-70">
+          <Download className="h-3.5 w-3.5" /> {busy ? "Preparing PDF…" : "Download Invoice (PDF)"}
+        </button>
+        <button type="button" onClick={() => window.print()} className="btn-outline">
+          <Printer className="h-3.5 w-3.5" /> Print
         </button>
         <a href={whatsappUrl(order)} target="_blank" rel="noopener noreferrer" className="btn-outline">
           <MessageCircle className="h-3.5 w-3.5" /> Send order on WhatsApp
